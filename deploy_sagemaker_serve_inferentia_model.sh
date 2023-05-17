@@ -13,6 +13,8 @@ set -e
 readonly ME=${0##*/}
 
 export AWS_PAGER=""
+export AWS_REGION="us-west-2"
+export INSTANCE_TYPE="ml.inf1.xlarge"
 
 display_usage() {
 
@@ -30,7 +32,7 @@ EOE
 check_sanity() {
 
     [[ $(command -v aws) ]] \
-        || whoopsie "Please install aws first."
+        || whoopsie "Please install AWS CLI first."
 
     [[ $(command -v docker) ]] \
         || whoopsie "Please install Docker first."
@@ -40,10 +42,10 @@ check_sanity() {
 deploy() {
 
     ./deploy_sagemaker_model.sh \
-        -r us-west-2 \
+        -r "${AWS_REGION}" \
         -n "sagemaker-yolov7-serve-inferentia" \
         -p "yolov7_sample/serve_inferentia/model.tar.gz" \
-        -i "ml.inf1.xlarge"
+        -i "${INSTANCE_TYPE}"
 
 }
 

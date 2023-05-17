@@ -31,7 +31,7 @@ EOE
 check_sanity() {
 
     [[ $(command -v aws) ]] \
-        || whoopsie "Please install aws first."
+        || whoopsie "Please install AWS CLI first."
 
     [[ $(command -v docker) ]] \
         || whoopsie "Please install Docker first."
@@ -54,17 +54,17 @@ create_iam_roles() {
         --role-name sagemaker-yolov7-train-role \
         --policy-arn "arn:aws:iam::${account}:policy/sagemaker-yolov7-train-role-policy"
 
+    aws iam create-policy \
+        --policy-name sagemaker-yolov7-serve-role-policy \
+        --policy-document file://policy/sagemaker-yolov7-serve-role-policy.json
+
     aws iam create-role \
         --role-name sagemaker-yolov7-serve-role \
         --assume-role-policy-document file://policy/sagemaker-assume-role-policy.json
 
     aws iam attach-role-policy \
         --role-name sagemaker-yolov7-serve-role \
-        --policy-arn "arn:aws:iam::${account}:policy/sagemaker-yolov7-train-role-policy"
-
-    aws iam attach-role-policy \
-        --role-name sagemaker-yolov7-serve-role \
-        --policy-arn "arn:aws:iam::aws:policy/AmazonSageMakerFullAccess"
+        --policy-arn "arn:aws:iam::${account}:policy/sagemaker-yolov7-serve-role-policy"
 
 }
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 # -- deploy_sagemaker_train_image.sh -------------------------------------------
 #
-# 学習用コンテナをECRにデプロイするスクリプト
+# トレーニング用コンテナをECRにデプロイするスクリプト
 #
 # Copyright (c) 2023- AUCNET IBS
 #
@@ -13,12 +13,13 @@ set -e
 readonly ME=${0##*/}
 
 export AWS_PAGER=""
+export AWS_REGION="us-west-2"
 
 display_usage() {
 
     cat <<EOE
 
-        学習用コンテナをECRにデプロイするスクリプト
+        トレーニング用コンテナをECRにデプロイするスクリプト
 
         構文: ./${ME}
 
@@ -30,7 +31,7 @@ EOE
 check_sanity() {
 
     [[ $(command -v aws) ]] \
-        || whoopsie "Please install aws first."
+        || whoopsie "Please install AWS CLI first."
 
     [[ $(command -v docker) ]] \
         || whoopsie "Please install Docker first."
@@ -40,7 +41,7 @@ check_sanity() {
 deploy() {
 
     ./deploy_sagemaker_image.sh \
-        -r us-west-2 \
+        -r "${AWS_REGION}" \
         -n "sagemaker-yolov7-train" \
         -d "sagemaker/train"
 

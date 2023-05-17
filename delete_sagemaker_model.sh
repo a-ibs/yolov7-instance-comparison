@@ -36,7 +36,7 @@ EOE
 check_sanity() {
 
     [[ $(command -v aws) ]] \
-        || whoopsie "Please install aws first."
+        || whoopsie "Please install AWS CLI first."
 
 }
 

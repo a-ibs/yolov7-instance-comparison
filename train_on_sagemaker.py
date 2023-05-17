@@ -2,7 +2,7 @@
 # coding: utf-8
 
 """
-SageMaker で学習を実行する
+SageMaker でトレーニングを実行する
 """
 
 import json
@@ -101,7 +101,7 @@ def generate_estimator(parsed_args):
 
 def train(parsed_args):
     """
-    学習の実行
+    トレーニングの実行
     """
 
     estimator = generate_estimator(parsed_args)

@@ -13,6 +13,7 @@ set -e
 readonly ME=${0##*/}
 
 export AWS_PAGER=""
+export AWS_REGION="us-west-2"
 
 display_usage() {
 
@@ -30,7 +31,7 @@ EOE
 check_sanity() {
 
     [[ $(command -v aws) ]] \
-        || whoopsie "Please install aws first."
+        || whoopsie "Please install AWS CLI first."
 
     [[ $(command -v docker) ]] \
         || whoopsie "Please install Docker first."
@@ -40,7 +41,7 @@ check_sanity() {
 deploy() {
 
     ./deploy_sagemaker_image.sh \
-        -r us-west-2 \
+        -r "${AWS_REGION}" \
         -n "sagemaker-yolov7-serve" \
         -d "sagemaker/serve"
 
