@@ -1,0 +1,80 @@
+---
+
+name: lint
+
+on: [pull_request]
+
+jobs:
+  commitlint:
+    name: Lint Commit Message
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: wagoid/commitlint-github-action@v5
+
+  super-lint:
+    name: Lint Code Base
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Lint Code Base
+        uses: github/super-linter/slim@v5
+        env:
+          DEFAULT_BRANCH: main
+          FILTER_REGEX_EXCLUDE: \.pre\-commit\-config\.yaml
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LINTER_RULES_PATH: .
+          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_ANSIBLE: false
+
+  shellcheck:
+    name: Lint Shell Scripts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Master
+        uses: actions/checkout@master
+      - name: Lint Shell Scripts
+        run: |
+          whoopsie() {
+              echo "$1" >&2
+              exit "${2:-192}"
+          }
+          SHELL_SCRIPTS_FOUND=$(find . \
+              -type f \
+              -name "*.sh" \
+          )
+          export SHELL_SCRIPTS_FOUND
+          [[ -z "${SHELL_SCRIPTS_FOUND}" ]] \
+              && whoopsie "No shell scripts to lint. Moving on..." 0
+          echo "${SHELL_SCRIPTS_FOUND}" \
+              | xargs shellcheck
+          echo "${SHELL_SCRIPTS_FOUND}" \
+              | xargs head -n 1 \
+              | grep --quiet '^#!/bin/bash$' \
+              || whoopsie 'Wrong interpreter'
+          echo "${SHELL_SCRIPTS_FOUND}" \
+              | xargs tail -n 1 \
+              | grep --quiet '^exit\ 0$' \
+              || whoopsie "Scripts should end in $(exit 0)"
+          # macOSでは `ggrep` (`brew install grep` 後に使える)
+          PASSED_COUNT=$(echo "${SHELL_SCRIPTS_FOUND}" \
+              | xargs grep --extended-regexp \
+                  --file "${GITHUB_WORKSPACE}/.sh_requirements" \
+                  | wc -l \
+                  | tr -d ' '
+          )
+          export PASSED_COUNT
+          echo "Format passed: ${PASSED_COUNT}"
+          NUMBER_OF_CUSTOM_RULES=$(
+              wc -l < "${GITHUB_WORKSPACE}/.sh_requirements" \
+                  | tr -d ' '
+          )
+          export NUMBER_OF_CUSTOM_RULES
+          if (( "${PASSED_COUNT}" % "${NUMBER_OF_CUSTOM_RULES}" != 0 )); then
+              whoopsie 'Required format unsatisfied'
+          fi

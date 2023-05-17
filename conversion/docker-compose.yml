@@ -1,0 +1,12 @@
+---
+
+version: "2.3"
+
+services:
+  conversion:
+    container_name: conversion
+    build:
+      context: .
+    tty: true
+    volumes:
+      - ./models:/tmp/models

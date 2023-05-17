@@ -1,0 +1,4 @@
+boto3
+connexion
+Flask==2.2.3
+waitress

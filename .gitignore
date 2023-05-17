@@ -1,0 +1,19 @@
+# 環境変数設定
+.exports
+
+# データ
+training_data
+local/imgs
+sagemaker/**/imgs
+output
+*.tgz
+*.tar.gz
+
+# モデル
+*.pt
+
+# Python
+__pycache__
+
+# Node.js
+node_modules

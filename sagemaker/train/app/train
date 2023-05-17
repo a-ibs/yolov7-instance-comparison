@@ -1,0 +1,126 @@
+#!/bin/bash
+# -- train ---------------------------------------------------------------------
+#
+# PyTorchで学習するスクリプト
+#
+# Copyright (c) 2023 AUCNET IBS
+#
+# ------------------------------------------------------------------------------
+
+set -uo pipefail
+set -e
+
+readonly ME=${0##*/}
+readonly HYPER_PRMS="/opt/ml/input/config/hyperparameters.json"
+readonly DATA_DIR="/opt/ml/input/data"
+readonly MODEL_DIR="/opt/ml/model"
+readonly TARGET_FILE=inputs
+
+display_usage() {
+
+    cat <<EOE
+    PyTorchで学習するスクリプト
+    構文: ./${ME}
+EOE
+
+    exit
+
+}
+
+check_sanity() {
+
+    [[ $(command -v python) ]] \
+        || whoopsie "Please install Python first."
+
+    [[ $(command -v jq) ]] \
+        || whoopsie "Please install jq first."
+
+}
+
+train_torch() {
+
+    tar zxf \
+        "${DATA_DIR}/main/${TARGET_FILE}.tgz" \
+        -C /tmp/
+
+    echo "Hyperparameters:"
+    jq . "${HYPER_PRMS}"
+
+    name=$(jq --raw-output '.name' "${HYPER_PRMS}")
+    data=$(jq --raw-output '.data' "${HYPER_PRMS}")
+    hyp=$(jq --raw-output '.hyp' "${HYPER_PRMS}")
+    cfg=$(jq --raw-output '.cfg' "${HYPER_PRMS}")
+    size=$(jq --raw-output '.size' "${HYPER_PRMS}")
+    weights=$(jq --raw-output '.weights' "${HYPER_PRMS}")
+    device=$(jq --raw-output '.device' "${HYPER_PRMS}")
+    workers=$(jq --raw-output '.workers' "${HYPER_PRMS}")
+    batch_size=$(jq --raw-output '.batch' "${HYPER_PRMS}")
+    epochs=$(jq --raw-output '.epochs' "${HYPER_PRMS}")
+
+    python train.py \
+        --weights "${weights}" \
+        --cfg "${cfg}" \
+        --data "${data}" \
+        --hyp "${hyp}" \
+        --epochs "${epochs}" \
+        --batch-size "${batch_size}" \
+        --img-size "${size}" "${size}" \
+        --device "${device}" \
+        --workers "${workers}" \
+        --name "${name}" || true
+
+    cp "runs/train/${name}"/*.png "${MODEL_DIR}"
+    cp "runs/train/${name}"/*.jpg "${MODEL_DIR}"
+    cp "runs/train/${name}"/*.txt "${MODEL_DIR}"
+    cp "runs/train/${name}"/*.yaml "${MODEL_DIR}"
+
+    mkdir -p "${MODEL_DIR}/weights"
+
+    best_weights="runs/train/${name}/weights/best.pt"
+
+    cp "${best_weights}" "${MODEL_DIR}/weights/" || true
+
+    python test.py \
+        --weights "${best_weights}" \
+        --data "${data}" \
+        --batch-size "${batch_size}" \
+        --img-size "${size}" \
+        --device "${device}" \
+        --task test \
+        --save-hybrid \
+        --name "${name}_test" || true
+
+    cp -r "runs/test/${name}_test" "${MODEL_DIR}/test" || true
+}
+
+main() {
+
+    while getopts h opt; do
+        case $opt in
+            h)
+                display_usage
+            ;;
+            \?)
+                whoopsie "Invalid option!"
+            ;;
+        esac
+    done
+
+    check_sanity
+
+    train_torch
+
+}
+
+whoopsie() {
+
+    local message=$1
+
+    echo "${message} Aborting..."
+    exit 192
+
+}
+
+main "$@"
+
+exit 0

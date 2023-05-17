@@ -1,0 +1,4 @@
+aws-sam-cli 1.82.0
+direnv 2.32.2
+nodejs 20.2.0
+python 3.10.11

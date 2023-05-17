@@ -1,0 +1,5 @@
+train: /tmp/train.txt
+val: /tmp/val.txt
+test: /tmp/test.txt
+nc: 2
+names: [ 'cat', 'dog' ]

@@ -1,0 +1,24 @@
+{
+  "name": "yolov7-instance-comparison",
+  "version": "1.0.0",
+  "description": "YOLOv7 Instance Comparison",
+  "main": "",
+  "scripts": {
+    "prepare": "bash -c 'cp ./git_hooks/* ./.git/hooks/'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com:a-ibs/yolov7-instance-comparison.git"
+  },
+  "author": "AUCNET IBS",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/a-ibs/yolov7-instance-comparison/issues"
+  },
+  "homepage": "https://github.com/a-ibs/yolov7-instance-comparison#readme",
+  "private": true,
+  "devDependencies": {
+    "@commitlint/cli": "^17.6.3",
+    "@commitlint/config-conventional": "^17.6.3"
+  }
+}

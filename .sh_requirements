@@ -1,0 +1,12 @@
+^#!/bin/bash$
+^#\ -{77}-$
+^set\ -uo\ pipefail$
+^readonly\ ME=\$.*}$
+^display_usage\(\)\ \{$
+^\s{4}cat\ <<EOE
+^EOE$
+^check_sanity\(\)\ \{$
+^main\(\) \{$
+^whoopsie\(\)\ {$
+^main\ "\$@"$
+^exit\ 0$
