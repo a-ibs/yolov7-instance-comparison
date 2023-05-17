@@ -1,5 +1,5 @@
 #!/bin/bash
-# -- deploy_sagemaker_serve_graviton_model.sh --------------------------------------
+# -- deploy_sagemaker_serve_graviton_model.sh ----------------------------------
 #
 # Graviton推論モデルをデプロイするスクリプト
 #

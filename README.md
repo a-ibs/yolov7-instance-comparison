@@ -75,9 +75,11 @@ Open Images Dataset V6 から犬と猫の画像をダウンロードし、圧縮
 
 トレーニング結果のモデルファイルをダウンロードし、展開する
 
+    $ export JOB_NAME=<ジョブ名>
+
     $ cd conversion/models
 
-    $ aws s3 cp s3://${S3_BUCKET}/yolov7_sample/<ジョブ名>/output/model.tar.gz ./model.tar.gz \
+    $ aws s3 cp s3://${S3_BUCKET}/yolov7_sample/${JOB_NAME}/output/model.tar.gz ./model.tar.gz \
         && tar -zxvf model.tar.gz \
         && cp model/weights/best.pt ./yolov7x.pt
 
@@ -101,43 +103,41 @@ inferentia 用のモデルファイルを推論用に圧縮し、 S3 にアッ�
 
 各種 SageMaker エンドポイントをデプロイする
 
-    $ cd ..
-
-    $ ./deploy_sagemaker_serve_cpu_model.sh
-
-    $ ./deploy_sagemaker_serve_graviton_model.sh
-
-    $ ./deploy_sagemaker_serve_model.sh
-
-    $ ./deploy_sagemaker_serve_inference_model.sh
+    $ cd .. \
+        && ./deploy_sagemaker_serve_cpu_model.sh \
+        && ./deploy_sagemaker_serve_graviton_model.sh \
+        && ./deploy_sagemaker_serve_model.sh \
+        && ./deploy_sagemaker_serve_inference_model.sh
 
 ## 推論の実行
 
     $ python detect_on_sagemaker.py \
         -e <エンドポイント名> \
-        -i <入力画像ディレクトリパス> \
-        -o <出力先ディレクトリパス>
+        -i <入力画像ディレクトリーパス> \
+        -o <出力先ディレクトリーパス>
 
 ## AWSインフラ削除
 
+    $ export REGION="us-west-2"
+
     $ ./delete_sagemaker_serve_model.sh \
-        -r us-west-2 \
+        -r "${REGION}" \
         -n sagemaker-yolov7-serve-cpu
 
     $ ./delete_sagemaker_serve_model.sh \
-        -r us-west-2 \
+        -r "${REGION}" \
         -n sagemaker-yolov7-serve-graviton
 
     $ ./delete_sagemaker_serve_model.sh \
-        -r us-west-2 \
+        -r "${REGION}" \
         -n sagemaker-yolov7-serve
 
     $ ./delete_sagemaker_serve_model.sh \
-        -r us-west-2 \
+        -r "${REGION}" \
         -n sagemaker-yolov7-serve-inferentia
 
     $ ./destroy_infra.sh
 
-[asdf]: https://asdf-vm.com/#/core-manage-asdf-vm
+[asdf]: https://asdf-vm.com
 [docker]: https://docs.docker.com/get-docker/
 [jq]: https://stedolan.github.io/jq/
