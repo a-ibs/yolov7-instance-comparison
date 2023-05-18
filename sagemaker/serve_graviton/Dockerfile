@@ -6,24 +6,24 @@ ENV TZ=Asia/Tokyo
 
 # hadolint ignore=DL3008
 RUN apt-get update \
-        && apt-get install --no-install-recommends --no-install-suggests -y \
-                gnupg2 \
-        && apt-get clean \
-        && rm -rf /var/lib/apt/lists/*
+    && apt-get install --no-install-recommends --no-install-suggests -y \
+        gnupg2 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # hadolint ignore=DL3008
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A4B469963BF863CC \
-        && apt-get update \
-        && apt-get install --no-install-recommends --no-install-suggests -y \
-                gcc-aarch64-linux-gnu \
-                g++-aarch64-linux-gnu \
-                git \
-                libopencv-dev \
-                python3.8-dev \
-                python3-pip \
-        && apt-get clean \
-        && rm -rf /var/lib/apt/lists/* \
-        && update-alternatives --install /usr/bin/python python /usr/bin/python3.8 1
+    && apt-get update \
+    && apt-get install --no-install-recommends --no-install-suggests -y \
+        gcc-aarch64-linux-gnu \
+        g++-aarch64-linux-gnu \
+        git \
+        libopencv-dev \
+        python3.8-dev \
+        python3-pip \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && update-alternatives --install /usr/bin/python python /usr/bin/python3.8 1
 
 WORKDIR /work
 

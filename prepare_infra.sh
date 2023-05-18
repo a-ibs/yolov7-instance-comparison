@@ -70,79 +70,21 @@ create_iam_roles() {
 
 create_ecr_repository() {
 
+    local repo=$1
+
     aws ecr create-repository \
         --region $REGION \
-        --repository-name "sagemaker-yolov7-train" \
+        --repository-name "${repo}" \
         --image-scanning-configuration scanOnPush=true
 
     aws ecr set-repository-policy \
         --region $REGION \
-        --repository-name "sagemaker-yolov7-train" \
+        --repository-name "${repo}" \
         --policy-text file://policy/ecr-repository-policy.json
 
     aws ecr put-lifecycle-policy \
         --region $REGION \
-        --repository-name "sagemaker-yolov7-train" \
-        --lifecycle-policy-text file://policy/ecr-lifecycle-policy.json
-
-    aws ecr create-repository \
-        --region $REGION \
-        --repository-name "sagemaker-yolov7-serve" \
-        --image-scanning-configuration scanOnPush=true
-
-    aws ecr set-repository-policy \
-        --region $REGION \
-        --repository-name "sagemaker-yolov7-serve" \
-        --policy-text file://policy/ecr-repository-policy.json
-
-    aws ecr put-lifecycle-policy \
-        --region $REGION \
-        --repository-name "sagemaker-yolov7-serve" \
-        --lifecycle-policy-text file://policy/ecr-lifecycle-policy.json
-
-    aws ecr create-repository \
-        --region $REGION \
-        --repository-name "sagemaker-yolov7-serve-inferentia" \
-        --image-scanning-configuration scanOnPush=true
-
-    aws ecr set-repository-policy \
-        --region $REGION \
-        --repository-name "sagemaker-yolov7-serve-inferentia" \
-        --policy-text file://policy/ecr-repository-policy.json
-
-    aws ecr put-lifecycle-policy \
-        --region $REGION \
-        --repository-name "sagemaker-yolov7-serve-inferentia" \
-        --lifecycle-policy-text file://policy/ecr-lifecycle-policy.json
-
-    aws ecr create-repository \
-        --region $REGION \
-        --repository-name "sagemaker-yolov7-serve-cpu" \
-        --image-scanning-configuration scanOnPush=true
-
-    aws ecr set-repository-policy \
-        --region $REGION \
-        --repository-name "sagemaker-yolov7-serve-cpu" \
-        --policy-text file://policy/ecr-repository-policy.json
-
-    aws ecr put-lifecycle-policy \
-        --region $REGION \
-        --repository-name "sagemaker-yolov7-serve-cpu" \
-        --lifecycle-policy-text file://policy/ecr-lifecycle-policy.json
-
-    aws ecr create-repository \
-        --region $REGION \
-        --repository-name "sagemaker-yolov7-serve-graviton" \
-        --image-scanning-configuration scanOnPush=true
-
-    aws ecr set-repository-policy \
-        --region $REGION \
-        --repository-name "sagemaker-yolov7-serve-graviton" \
-        --policy-text file://policy/ecr-repository-policy.json
-
-    aws ecr put-lifecycle-policy \
-        --region $REGION \
-        --repository-name "sagemaker-yolov7-serve-graviton" \
+        --repository-name "${repo}" \
         --lifecycle-policy-text file://policy/ecr-lifecycle-policy.json
 
 }
@@ -164,7 +106,12 @@ main() {
 
     create_iam_roles
 
-    create_ecr_repository
+    repos=("train serve serve-inferentia serve-cpu serve-graviton")
+
+    for repo in "${repos[@]}"
+    do
+        create_ecr_repository "sagemaker-yolov7-${repo}"
+    done
 
 }
 

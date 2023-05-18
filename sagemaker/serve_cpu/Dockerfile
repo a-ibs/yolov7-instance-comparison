@@ -15,16 +15,16 @@ RUN yum update -y \
 
 # hadolint ignore=DL3013
 RUN pip3 install --no-cache-dir \
-        pandas \
-        requests \
-        Pillow \
-        opencv-python \
-        tqdm \
-        pyyaml \
-        matplotlib \
-        seaborn \
-        scipy \
-        tensorboard
+    pandas \
+    requests \
+    Pillow \
+    opencv-python \
+    tqdm \
+    pyyaml \
+    matplotlib \
+    seaborn \
+    scipy \
+    tensorboard
 
 WORKDIR /work
 

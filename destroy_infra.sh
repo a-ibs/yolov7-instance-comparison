@@ -38,7 +38,7 @@ check_sanity() {
 
 }
 
-create_iam_roles() {
+destroy_iam_roles() {
 
     account=$(aws sts get-caller-identity --query Account --output text)
 
@@ -64,43 +64,18 @@ create_iam_roles() {
 
 }
 
-create_ecr_repository() {
+destroy_ecr_repository() {
+
+    local repo=$1
 
     aws ecr batch-delete-image \
         --region $REGION \
-        --repository-name "sagemaker-yolov7-train" \
-        --image-ids "$(aws ecr list-images --region $REGION --repository-name "sagemaker-yolov7-train" --query 'imageIds[*]' --output json)" || true
+        --repository-name "${repo}" \
+        --image-ids "$(aws ecr list-images --region $REGION --repository-name "${repo}" --query 'imageIds[*]' --output json)" || true
 
     aws ecr delete-repository \
         --region $REGION \
-        --repository-name "sagemaker-yolov7-train"
-
-    aws ecr batch-delete-image \
-        --region $REGION \
-        --repository-name "sagemaker-yolov7-serve" \
-        --image-ids "$(aws ecr list-images --region $REGION --repository-name "sagemaker-yolov7-serve" --query 'imageIds[*]' --output json)" || true
-
-    aws ecr delete-repository \
-        --region $REGION \
-        --repository-name "sagemaker-yolov7-serve"
-
-    aws ecr batch-delete-image \
-        --region $REGION \
-        --repository-name "sagemaker-yolov7-serve-inferentia" \
-        --image-ids "$(aws ecr list-images --region $REGION --repository-name "sagemaker-yolov7-serve-inferentia" --query 'imageIds[*]' --output json)" || true
-
-    aws ecr delete-repository \
-        --region $REGION \
-        --repository-name "sagemaker-yolov7-serve-inferentia"
-
-    aws ecr batch-delete-image \
-        --region $REGION \
-        --repository-name "sagemaker-yolov7-serve-cpu" \
-        --image-ids "$(aws ecr list-images --region $REGION --repository-name "sagemaker-yolov7-serve-cpu" --query 'imageIds[*]' --output json)" || true
-
-    aws ecr delete-repository \
-        --region $REGION \
-        --repository-name "sagemaker-yolov7-serve-cpu"
+        --repository-name "${repo}"
 
 }
 
@@ -119,9 +94,14 @@ main() {
 
     check_sanity
 
-    create_iam_roles
+    destroy_iam_roles
 
-    create_ecr_repository
+    repos=("train serve serve-inferentia serve-cpu serve-graviton")
+
+    for repo in "${repos[@]}"
+    do
+        destroy_ecr_repository "sagemaker-yolov7-${repo}"
+    done
 
 }
 

@@ -24,22 +24,22 @@ WORKDIR /tmp/yolov7
 
 # hadolint ignore=DL3013,DL3059
 RUN pip3 install --no-cache-dir \
-        pandas \
-        requests \
-        urllib3==1.26.15 \
-        Pillow \
-        opencv-python \
-        tqdm \
-        pyyaml \
-        matplotlib \
-        seaborn
+    pandas \
+    requests \
+    urllib3==1.26.15 \
+    Pillow \
+    opencv-python \
+    tqdm \
+    pyyaml \
+    matplotlib \
+    seaborn
 
 # hadolint ignore=DL3033
 RUN yum install -y \
-        mesa-libGL.x86_64 \
-        gcc \
-        gcc-c++ \
-        fontconfig \
+    mesa-libGL.x86_64 \
+    gcc \
+    gcc-c++ \
+    fontconfig \
     && yum clean all
 
 # hadolint ignore=DL3013,SC2102
