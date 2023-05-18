@@ -57,8 +57,8 @@ deploy() {
     fullname="${account}.dkr.ecr.${region}.amazonaws.com/${image}:latest"
 
     aws ecr get-login-password \
-        --region "${region}" | \
-            docker login \
+        --region "${region}" \
+        | docker login \
             --username AWS \
             --password-stdin "${account}".dkr.ecr."${region}".amazonaws.com
 

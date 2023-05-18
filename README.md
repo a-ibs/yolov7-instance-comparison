@@ -63,13 +63,10 @@ Open Images Dataset V6 から犬と猫の画像をダウンロードし、圧縮
 
 各種推論用イメージを ECR にデプロイする
 
-    $ ./deploy_sagemaker_serve_cpu_image.sh
-
-    $ ./deploy_sagemaker_serve_graviton_image.sh
-
-    $ ./deploy_sagemaker_serve_image.sh
-
-    $ ./deploy_sagemaker_serve_inference_image.sh
+    $ ./deploy_sagemaker_serve_cpu_image.sh \
+        && ./deploy_sagemaker_serve_graviton_image.sh \
+        && ./deploy_sagemaker_serve_image.sh \
+        && ./deploy_sagemaker_serve_inference_image.sh
 
 ## モデルのダウンロード、変換、デプロイ
 
