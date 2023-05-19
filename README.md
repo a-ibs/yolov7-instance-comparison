@@ -14,11 +14,7 @@ YOLOv7 を SageMaker の複数のインスタンスで実行し、速度を比�
 
 プラグインを追加する
 
-    $ asdf plugin-add aws-sam-cli \
-        ; asdf plugin-add direnv \
-        ; asdf plugin-add hadolint \
-        ; asdf plugin-add nodejs \
-        ; asdf plugin-add python
+    $ awk '{system("asdf plugin-add " $1)}' .tool-versions
 
 必要なソフトウェアをインストールする
 
