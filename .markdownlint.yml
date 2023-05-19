@@ -7,7 +7,7 @@ MD004: false                  # Unordered list style
 MD007:
   indent: 2                   # Unordered list indentation
 MD013:
-  line_length: 120            # Line length 120 is far too short
+  line_length: 120            # Line length 80 is far too short
 MD014: false                  # Dollar signs without showing output
 MD026:
   punctuation: ".,;:!。，；:"   # List of not allowed
