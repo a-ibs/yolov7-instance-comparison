@@ -87,13 +87,13 @@ def detect_by_model(image, score_threshold, nms_threshold):
 
     predictions = non_max_suppression(predictions, score_threshold, nms_threshold)[0]
 
-    logger.info("NMS Elapsed time: %s", datetime.now() - nms_begin_time)
+    logger.info("NMS elapsed time: %s", datetime.now() - nms_begin_time)
 
     format_begin_time = datetime.now()
 
     formed_predictions = format_predictions(predictions, vehicle_map, score_threshold)
 
-    logger.info("Format Elapsed time: %s", datetime.now() - format_begin_time)
+    logger.info("Format elapsed time: %s", datetime.now() - format_begin_time)
 
     logger.info("Predictions: %s", formed_predictions)
 
@@ -122,7 +122,7 @@ def detect():
     score_threshold = float(params.get("score_threshold", 0.3))
     nms_threshold = float(params.get("nms_threshold", 0.6))
 
-    logger.info("Request recieved.")
+    logger.info("Request received.")
 
     try:
         image = Image.open(request.stream).convert("RGB")
@@ -145,7 +145,7 @@ def detect():
             }
         )
 
-        logger.info("Whole Elapsed time: %s", datetime.now() - whole_begin_time)
+        logger.info("Whole elapsed time: %s", datetime.now() - whole_begin_time)
 
         return response, 200, JSON_HEADER
 
