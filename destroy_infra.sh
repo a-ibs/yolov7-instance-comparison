@@ -40,7 +40,7 @@ check_sanity() {
 
 destroy_iam_roles() {
 
-    account=$(aws sts get-caller-identity --query Account --output text)
+    local account=$(aws sts get-caller-identity --query Account --output text)
 
     aws iam detach-role-policy \
         --role-name sagemaker-yolov7-train-role \
@@ -81,6 +81,8 @@ destroy_ecr_repository() {
 
 main() {
 
+    local repos=("train serve serve-inferentia serve-cpu serve-graviton")
+
     while getopts h opt; do
         case $opt in
             h)
@@ -95,8 +97,6 @@ main() {
     check_sanity
 
     destroy_iam_roles
-
-    repos=("train serve serve-inferentia serve-cpu serve-graviton")
 
     for repo in "${repos[@]}"
     do
