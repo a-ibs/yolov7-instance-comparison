@@ -1,0 +1,12 @@
+{
+  "device": "0",
+  "batch": "8",
+  "workers": "4",
+  "epochs": "200",
+  "size": "640",
+  "name": "yolov7x-sample",
+  "data": "data/sample.yaml",
+  "hyp": "data/hyp.sample.yaml",
+  "cfg": "cfg/yolov7x.yaml",
+  "weights": "yolov7x_training.pt"
+}

@@ -1,0 +1,153 @@
+---
+openapi: "3.0.2"
+
+info:
+  title: Detection API
+  version: "1.2.0"
+  description: "Object Detection"
+
+paths:
+  /ping:
+    get:
+      summary: Health check
+      tags:
+        - health_check
+      description: Response for health check.
+      operationId: app.ping
+      responses:
+        "200":
+          description: health check response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+
+  /invocations:
+    post:
+      summary: Detect objects
+      tags:
+        - detection
+      description: Detect objects.
+      operationId: app.detect
+      requestBody:
+        required: true
+        content:
+          image/jpeg:
+            schema:
+              type: string
+              format: binary
+      responses:
+        "200":
+          $ref: "#/components/responses/PredictionsResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+components:
+  schemas:
+    ClassLabel:
+      type: string
+      description: クラスラベル
+      example: "plate"
+
+    Prob:
+      type: number
+      description: 散布量
+      example: 0.9996929168701172
+
+    Box:
+      type: array
+      description: "座標情報"
+      items:
+        type: number
+        description: "TOP,LEFT,BOTTOM,RIGHT"
+      example:
+        - 0.6283834034215701
+        - 0.2514416268123092
+        - 0.6744890978829857
+        - 0.2878988502261254
+
+    Prediction:
+      type: object
+      description: "推論結果"
+      properties:
+        class_label:
+          $ref: "#/components/schemas/ClassLabel"
+        prob:
+          $ref: "#/components/schemas/Prob"
+        box:
+          $ref: "#/components/schemas/Box"
+
+  responses:
+    PredictionsResponse:
+      description: OK.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              predictions:
+                type: array
+                description: "推論結果配列"
+                items:
+                  $ref: "#/components/schemas/Prediction"
+
+    EmptyResponse:
+      description: OK.
+      content:
+        application/json:
+          schema:
+            type: object
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            description: "401応答"
+            properties:
+              message:
+                type: string
+                description: "エラーメッセージ"
+                example: "Unauthorized"
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            description: "403応答"
+            properties:
+              message:
+                type: string
+                description: "エラーメッセージ"
+                example: "The incoming token has expired"
+
+    InternalServerError:
+      description: InternalServerError
+      content:
+        application/json:
+          schema:
+            type: object
+            description: "500応答"
+            properties:
+              message:
+                type: string
+                description: "エラーメッセージ"
+                example: "Internal Server Error"
+
+tags:
+  - name: health_check
+    description: 死活監視
+  - name: detection
+    description: 検出

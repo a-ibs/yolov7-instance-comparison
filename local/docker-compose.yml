@@ -1,0 +1,13 @@
+---
+
+version: "2.3"
+
+services:
+  local_server:
+    container_name: local_server
+    build:
+      context: .
+    tty: true
+    volumes:
+      - ./models:/tmp/models
+      - ./imgs:/tmp/imgs
